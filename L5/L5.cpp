@@ -47,6 +47,11 @@ public:
         }
         return s.substr(maxI, maxL);
     }
+
+    string manacher(string s)
+    {
+
+    }
 };
 
 int main()
