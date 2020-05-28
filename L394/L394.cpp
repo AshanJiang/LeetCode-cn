@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <stack>
 #include <string>
 #include <sstream>
 
@@ -6,42 +7,51 @@ using namespace std;
 
 class Solution {
 public:
-    string repeatStr(int n, string str) {
+    string repeat(string s, int n) {
         ostringstream os;
         for (int i = 0; i < n; i++)
-            os << str;
+            os << s;
         return os.str();
     }
 
     string decodeString(string s) {
-        string numStr{ "" }, encodeStr{ "" }, res{ "" };
-        bool encodeFlag = false;
+        stack <string> stack;
+        string res = "";
+        string digit = "";
         for (char c : s)
         {
-            if (c >= '0' && c <= '9')
+            if (isdigit(c))
             {
-                numStr += c;
+                digit += c;
                 continue;
             }
             if (c == '[')
             {
-                encodeFlag = true;
+                stack.push(digit);
+                digit.clear();
+                stack.push("[");
                 continue;
             }
             if (c == ']')
             {
-                encodeFlag = false;
-                res += repeatStr(stoi(numStr), encodeStr);
-                encodeStr = "";
-                numStr = "";
+                string code = "";
+                while (stack.top() != "[")
+                {
+                    code.insert(0, stack.top());
+                    stack.pop();
+                }
+                stack.pop();
+                int product = stoi(stack.top());
+                stack.pop();
+                stack.push(repeat(code, product));
                 continue;
             }
-            if (encodeFlag)
-            {
-                encodeStr += c;
-                continue;
-            }
-            res += c;
+            stack.push(string(1, c));
+        }
+        while (!stack.empty())
+        {
+            res.insert(0, stack.top());
+            stack.pop();
         }
         return res;
     }
@@ -50,7 +60,7 @@ public:
 int main()
 {
     Solution ans;
-    string str = "3[a2[c]]";
-    cout << ans.decodeString(str);
+    string s = "2[a2[bc]]";
+    cout << ans.decodeString(s);
 	return 0;
 }
