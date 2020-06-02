@@ -33,7 +33,7 @@ public:
                 return min(nums1[index1], nums2[index2]);
             }
 
-            // 正常情况
+            // 正常情况,通过不断折半k进行二分
             int newIndex1 = min(index1 + k / 2 - 1, m - 1);
             int newIndex2 = min(index2 + k / 2 - 1, n - 1);
             int pivot1 = nums1[newIndex1];
