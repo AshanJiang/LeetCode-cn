@@ -4,6 +4,7 @@
 
 using namespace std;
 
+//TODO::动态规划还是太弱
 class Solution {
 public:
     int minCost(vector<int>& houses, vector<vector<int>>& cost, int m, int n, int target) {
