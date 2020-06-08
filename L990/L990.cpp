@@ -8,59 +8,76 @@ using namespace std;
 class Solution {
 public:
     bool equationsPossible(vector<string>& equations) {
-        unordered_map <char, int> wordValue;
-        int value = 1;
-        for (const string& s : equations)
+        unordered_map <char, int> wordSet; // 表示字母在哪个集合中，每个集合中的所有字母值相同
+        vector <int> unequalIndex;
+        int setIndex = 1;
+        for (int i = 0; i < equations.size(); i++)
         {
-            char v1 = s[0];
-            char v2 = s[3];
-            char op = s[1];
+			char v1 = equations[i][0];
+            char v2 = equations[i][3];
+            char op = equations[i][1];
             if (op == '=')
             {
-                if (!wordValue.count(v1) && !wordValue.count(v2)) // v1，v2都不存在
+                if (v1 == v2)
+                    continue;
+                if (!wordSet.count(v1)) // 没找到v1
                 {
-                    wordValue[v1] = value;
-                    wordValue[v2] = value;
-                    value++;
-                }
-                if (wordValue.count(v1) && !wordValue.count(v2)) // v1存在，v2不存在
-                {
-                    wordValue[v2] = wordValue[v1];
-                }
-                if (!wordValue.count(v1) && wordValue.count(v2)) // v1不存在，v2存在
-                {
-                    wordValue[v1] = wordValue[v2];
-                }
-                if (wordValue.count(v1) && wordValue.count(v2)) // v1，v2都存在
-                {
-                    if (wordValue[v1] != wordValue[v2])
+                    if (wordSet.count(v2)) // 找到v2
                     {
-                        return false;
+                        wordSet[v1] = wordSet[v2];
+                    }
+                    else // 没找到v2
+                    {
+                        wordSet[v1] = setIndex++;
+                        wordSet[v2] = wordSet[v1];
+                    }
+                }
+                else // 找到v1
+                {
+                    if (wordSet.count(v2)) // 找到v2
+                    {
+                        //TODO::连通
+                    }
+                    else // 没找到v2
+                    {
+                        wordSet[v2] = wordSet[v1];
                     }
                 }
             }
-            if (op == '!')
+            else
             {
-                if (!wordValue.count(v1) && !wordValue.count(v2)) // v1，v2都不存在
+                unequalIndex.push_back(i);
+            }
+        }
+        // 先将等于连通起来，再考虑不等于
+        for (int i : unequalIndex)
+        {
+            char v1 = equations[i][0];
+            char v2 = equations[i][3];
+            if (v1 == v2)
+                return false;
+            if (!wordSet.count(v1)) // 没找到v1
+            {
+                if (wordSet.count(v2)) // 找到v2
                 {
-                    wordValue[v1] = value++;
-                    wordValue[v2] = value++;
+                    wordSet[v1] = setIndex++;
                 }
-                if (wordValue.count(v1) && !wordValue.count(v2)) // v1存在，v2不存在
+                else // 没找到v2
                 {
-                    wordValue[v2] = value;
-                    value++;
+                    wordSet[v1] = setIndex++;
+                    wordSet[v2] = setIndex++;
                 }
-                if (!wordValue.count(v1) && wordValue.count(v2)) // v1不存在，v2存在
+            }
+            else // 找到v1
+            {
+                if (wordSet.count(v2)) // 找到v2
                 {
-                    wordValue[v1] = value++;
-                }
-                if (wordValue.count(v1) && wordValue.count(v2)) // v1，v2都存在
-                {
-                    if (wordValue[v1] == wordValue[v2])
-                    {
+                    if (wordSet[v1] == wordSet[v2])
                         return false;
-                    }
+                }
+                else // 没找到v2
+                {
+                    wordSet[v2] = setIndex++;
                 }
             }
         }
@@ -72,6 +89,6 @@ int main()
 {
     Solution ans;
     vector <string> equations = { "c==c","f!=a","f==b","b==c" };
-    cout << ans.equationsPossible(equations);
+    cout << ans.equationsPossible(equations) << "\n";
 	return 0;
 }
