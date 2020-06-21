@@ -86,7 +86,7 @@ public:
         int maxPath = max(leftPath, rightPath); // 节点作为路径内的点时，只能选左边或者一边一条
         if (maxPath > 0)
             path += maxPath;
-        int nodeVal = node->val; // 在结点出转弯，可以获得左右两边的路径
+        int nodeVal = node->val; // 在结点处转弯，可以获得左右两边的路径
         if (leftPath > 0)
             nodeVal += leftPath;
         if (rightPath > 0)
