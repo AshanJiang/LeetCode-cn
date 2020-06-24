@@ -7,7 +7,7 @@ using namespace std;
 
 class Solution {
 public:
-    int superEggDrop(int K, int N) {
+    int superEggDropOverTime(int K, int N) {
         // K个鸡蛋，N层楼
         vector <vector <int>> dp(N + 1, vector<int>(K + 1, 0)); // dp(i, j)表示在第i层楼，有K个鸡蛋确定临界值需要的次数
         // 初始化
@@ -41,6 +41,46 @@ public:
                     }
                 }
                 dp[i][j] = dp_i_j;
+            }
+        }
+        return dp[N][K];
+    }
+
+    int superEggDrop(int K, int N) {
+        // K个鸡蛋，N层楼
+        vector <vector <int>> dp(N + 1, vector<int>(K + 1, 0)); // dp(i, j)表示在第i层楼，有K个鸡蛋确定临界值需要的次数
+        // 初始化
+        for (int i = 1; i <= N; i++)
+        {
+            dp[i][1] = i; // 只有一个鸡蛋
+        }
+        for (int j = 1; j <= K; j++)
+        {
+            dp[1][j] = 1; // 只有1层dp(1,...) = 1不管有多少个蛋，次数都为1
+        }
+        // j：鸡蛋数，i：楼层数
+        for (int j = 2; j <= K; j++)
+        {
+            for (int i = 2; i <= N; i++)
+            {
+                // 用二分法查找第一次在哪一层扔，对i层j个鸡蛋获得最优解
+                // ！不能直接枚举，要二分法加速 dp[k - 1][j - 1], dp[i - k][j]
+                int low = 1;
+                int high = i;
+                while (low + 1 < high)
+                {
+                    int mid = (low + high) / 2;
+                    int t1 = dp[mid - 1][j - 1];
+                    int t2 = dp[i - mid][j];
+                    if (t1 < t2)
+                        low = mid;
+                    else if (t1 > t2)
+                        high = mid;
+                    else
+                        low = high = mid;
+                }
+                dp[i][j] = 1 + min(max(dp[low - 1][j - 1], dp[i - low][j]),
+                    max(dp[high - 1][j - 1], dp[i - high][j]));
             }
         }
         return dp[N][K];
