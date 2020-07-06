@@ -4,45 +4,35 @@
 using namespace std;
 
 class Solution {
-    int rows;
-    int cols;
-    int paths;
-    vector<vector<int>> grid;
 public:
-    void travel(int i, int j)
-    {
-        //cerr << "travel(" << i << "," << j << ")\n";
-        if (i >= rows || j >= cols)
-        {
-            return;
-        }
-        else if (grid[i][j] == 1)
-        {
-            return;
-        }
-        else
-        {
-            if (i == rows - 1 && j == cols - 1)
-            {
-                paths += 1;
-            }
-            else
-            {
-                travel(i, j + 1);
-                travel(i + 1, j);
-            }
-        }
-    }
-
     int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
-        paths = 0;
-        rows = obstacleGrid.size();
-        if (rows == 0)
-            return paths;
-        cols = obstacleGrid[0].size();
-        grid = obstacleGrid;
-        travel(0, 0);
-        return paths;
+        if (obstacleGrid.size() == 0)
+            return 0;
+        vector<vector<int>> paths(obstacleGrid.size(),vector<int>(obstacleGrid[0].size(), 0));
+        for (int j = 0; j < obstacleGrid[0].size(); j++)
+        {
+            if (obstacleGrid[0][j])
+                break;
+            else
+                paths[0][j] = 1;
+        }
+        for (int i = 1; i < obstacleGrid.size(); i++)
+        {
+            for (int j = 0; j < obstacleGrid[0].size(); j++)
+            {
+                if (obstacleGrid[i][j])
+                    paths[i][j] = 0;
+                else
+                {
+                    if (j)
+                        paths[i][j] = paths[i - 1][j] + paths[i][j - 1];
+                    else
+                        paths[i][j] = paths[i - 1][j];
+                }
+                //cerr << "paths(" << i << "," << j << ")=" << paths[i][j] << endl;
+            }
+        }
+        return paths[obstacleGrid.size() - 1][obstacleGrid[0].size() - 1];
     }
 };
 
