@@ -35,7 +35,7 @@ public:
         return paths.back().back();
     }
 
-    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+    int uniquePathsWithObstacles2(vector<vector<int>>& obstacleGrid) {
         int n = obstacleGrid.size(), m = obstacleGrid.at(0).size();
         vector <int> f(m);
 
