@@ -5,6 +5,7 @@
 
 using namespace std;
 
+// 打印vector
 template<typename T>
 std::ostream& operator<<(std::ostream& os, std::vector<T> vec)
 {
